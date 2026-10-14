@@ -110,3 +110,35 @@ void ChessGame::DisplayBoard() const
 
     cout << "  a b c d e f g h\n";
 }
+
+bool ChessGame::IsLegalMove(int startRow, int startColumn, int endRow, int endColumn)
+{
+    if (startRow < 0 || startRow >= BoardSize || startColumn < 0 || startColumn >= BoardSize || endRow < 0 || endRow >= BoardSize || endColumn < 0 || endColumn >= BoardSize)
+    {
+        return false;
+    }
+
+    if (!board[startRow][startColumn].has_value())
+    {
+        return false;
+    }
+
+    const Piece& movingPiece = board[startRow][startColumn].value();
+
+    if (movingPiece.GetColor() != currentPlayer)
+    {
+        return false;
+    }
+
+    if (board[endRow][endColumn].has_value() && board[endRow][endColumn]->GetColor() == currentPlayer)
+    {
+        return false;
+    }
+
+    if (!movingPiece.CanMove(startRow, startColumn, endRow, endColumn))
+    {
+        return false;
+    }
+
+    return true;
+}
