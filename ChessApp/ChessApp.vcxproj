@@ -139,7 +139,9 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ChessApp.cpp" />
+    <ClCompile Include="Program.cpp" />
+    <ClCompile Include="ChessGame.cpp" />
+    <ClCompile Include="Piece.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="ChessApp/ChessApp.vcxproj" />
+  <Project Path="ChessApp/ChessApp.vcxproj" Id="c9161b92-fd57-4d04-816e-ce95689f5096" />
 </Solution>

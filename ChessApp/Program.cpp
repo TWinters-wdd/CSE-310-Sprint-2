@@ -2,10 +2,16 @@
 //
 
 #include <iostream>
+#include "ChessGame.h"
+using namespace std;
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    ChessGame game;
+
+    game.DisplayBoard();
+
+    return 0;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
