@@ -178,3 +178,8 @@ bool ChessGame::MakeMove(int startRow, int startColumn, int endRow, int endColum
 
     return true;
 }
+
+bool ChessGame::IsGameOver() const
+{
+    return gameOver;
+}
