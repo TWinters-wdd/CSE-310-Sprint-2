@@ -113,11 +113,13 @@ void ChessGame::DisplayBoard() const
 
 bool ChessGame::IsLegalMove(int startRow, int startColumn, int endRow, int endColumn)
 {
+    // Checks that all the coordinates given are inside the board
     if (startRow < 0 || startRow >= BoardSize || startColumn < 0 || startColumn >= BoardSize || endRow < 0 || endRow >= BoardSize || endColumn < 0 || endColumn >= BoardSize)
     {
         return false;
     }
 
+    // Checks that the starting square contains a piece
     if (!board[startRow][startColumn].has_value())
     {
         return false;
@@ -125,19 +127,53 @@ bool ChessGame::IsLegalMove(int startRow, int startColumn, int endRow, int endCo
 
     const Piece& movingPiece = board[startRow][startColumn].value();
 
+    // Prevent current player from moving the opponent's piece
     if (movingPiece.GetColor() != currentPlayer)
     {
         return false;
     }
 
+    // Prevent piece from moving onto a square occupied by another piece of the same color.
     if (board[endRow][endColumn].has_value() && board[endRow][endColumn]->GetColor() == currentPlayer)
     {
         return false;
     }
 
+    // Checks whether the movement pattern is valid.
     if (!movingPiece.CanMove(startRow, startColumn, endRow, endColumn))
     {
         return false;
+    }
+
+    return true;
+}
+
+bool ChessGame::MakeMove(int startRow, int startColumn, int endRow, int endColumn)
+{
+    // Check if the move the player wants to make is legal
+    if (!IsLegalMove(startRow, startColumn, endRow, endColumn))
+    {
+        return false;
+    }
+
+    // Copies the piece from the starting square to the destination square and then empties the original square.
+    board[endRow][endColumn] = board[startRow][startColumn];
+    board[startRow][startColumn].reset();
+
+    // Stores each move description in the following format: (1, 4) -> (3,4) where the first pair of numbers is the starting row and column and the last are the ending row and column.
+    string moveDescription = "(" + to_string(startRow) + "," + to_string(startColumn) + ") -> (" + to_string(endRow) + "," + to_string(endColumn) + ")";
+
+    // Adds the move to the move-history vector.
+    moveHistory.push_back(moveDescription);
+
+    // Switches the current player after a successful move
+    if (currentPlayer == PieceColor::White)
+    {
+        currentPlayer = PieceColor::Black;
+    }
+    else
+    {
+        currentPlayer = PieceColor::White;
     }
 
     return true;

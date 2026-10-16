@@ -11,7 +11,16 @@ int main()
 
     game.DisplayBoard();
 
-    return 0;
+    if (game.MakeMove(1, 4, 3, 4))
+    {
+        cout << "Move succeeded.\n";
+    }
+    else
+    {
+        cout << "Move failed.\n";
+    }
+
+    game.DisplayBoard();
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
