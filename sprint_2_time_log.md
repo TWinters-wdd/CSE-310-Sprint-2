@@ -24,15 +24,18 @@ The expected minimum amount of time each Sprint for each category is as follows:
 
 ## Time Log
 
-|Date      |Category|Description                                                                       |Time Worked (hh:mm)|
-|----------|:------:|----------------------------------------------------------------------------------|:-----------------:|
-|10/05/2026|   IM   |Completed Planning Assignment, Started documentation.                             |       01:08       |
-|10/06/2026|   IM   |Started Following the C++ Tutorial on w3schools.                                  |       00:54       |
-|10/07/2026|   IM   |Fixed issue where program would not run on Expo Go.                               |       01:01       |
-|10/08/2026|   TP   |Started following a React Native Tutorial.                                        |       01:01       |
-|10/09/2026|   IM   |Continued to follow the C++ Tutorial on w3schools website.                        |       00:43:47    |
-|10/12/2026|   IM   |Used Codex to explain basic concepts of C++ and create classes.                   |       01:13:13    |
-|10/14/2026|   IM   |Used Codex to walk through the different classes (ChessGame.cpp, Piece.cpp, etc.) |       02:01       |
+|Date      |Category|Description                                                                         |Time Worked (hh:mm)|
+|----------|:------:|------------------------------------------------------------------------------------|:-----------------:|
+|10/05/2026|   IM   |Completed Planning Assignment, Started documentation.                               |       01:08       |
+|10/06/2026|   IM   |Started Following the C++ Tutorial on w3schools.                                    |       00:54       |
+|10/07/2026|   IM   |Fixed issue where program would not run on Expo Go.                                 |       01:01       |
+|10/08/2026|   TP   |Started following a React Native Tutorial.                                          |       01:01       |
+|10/09/2026|   IM   |Continued to follow the C++ Tutorial on w3schools website.                          |       00:43:47    |
+|10/09/2026|   TP   |Planned out the Map Design.                                                         |       01:00       |
+|10/12/2026|   IM   |Used Codex to explain basic concepts of C++ and create classes.                     |       01:13:13    |
+|10/14/2026|   IM   |Used Codex to walk through the different classes (ChessGame.cpp, Piece.cpp, etc.)   |       02:01       |
+|10/15/2026|   TP   |Started to implement the map feature for the map tab.                               |       00:59       |
+|10/16/2026|   TP   |Got a basic interactive map working on the web display.                             |       01:00       |
 
 _Note: Add more rows as needed._
 
@@ -41,6 +44,6 @@ _Note: Add more rows as needed._
 |Categroy                       |Total Time (Hours:Minutes)|
 |-------------------------------|:------------------------:|
 |IM - Individual Module         |                          |
-|TP - Team Project              |                          |
+|TP - Team Project              |           4:00           |
 |MTG - Class Meetings           |                          |
 |**TOTAL**                      |                          |
