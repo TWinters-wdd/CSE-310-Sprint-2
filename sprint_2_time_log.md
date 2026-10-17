@@ -36,6 +36,7 @@ The expected minimum amount of time each Sprint for each category is as follows:
 |10/14/2026|   IM   |Used Codex to walk through the different classes (ChessGame.cpp, Piece.cpp, etc.)   |       02:01       |
 |10/15/2026|   TP   |Started to implement the map feature for the map tab.                               |       00:59       |
 |10/16/2026|   TP   |Got a basic interactive map working on the web display.                             |       01:00       |
+|10/16/2026|   IM   |Got the basic gameplay loop for my chess game.                                      |       01:10       |
 
 _Note: Add more rows as needed._
 

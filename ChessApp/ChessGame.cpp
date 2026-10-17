@@ -4,24 +4,32 @@
 
 using namespace std;
 
-ChessGame::ChessGame() : board(BoardSize, vector<optional<Piece>>(BoardSize)), currentPlayer(PieceColor::White), gameOver(false)
+// Creates a new chess game and prepares an initial board.
+ChessGame::ChessGame()
+    : board(BoardSize, vector<optional<Piece>>(BoardSize)),
+      currentPlayer(PieceColor::White),
+      gameOver(false)
 {
     InitializeBoard();
 }
 
 void ChessGame::InitializeBoard()
 {
+    // Rebuild the board as an 8-by-8 collection of empty squares.
+    // Each optional<Piece> is empty until a piece is placed on that square.
     board = vector<vector<optional<Piece>>>(
         BoardSize,
         vector<optional<Piece>>(BoardSize)
     );
 
+    // Reset the parts of the game that can change during play.
     currentPlayer = PieceColor::White;
     gameOver = false;
     moveHistory.clear();
 
-    // Rows [0 - 1] in Vector are White's pieces
-    // Rows [6 - 7] in Vector are Black's pieces
+    // Rows 0 and 1 contain White's pieces.
+    // Rows 6 and 7 contain Black's pieces.
+    // The middle four rows remain empty at the start of the game.
 
     vector<PieceType> backRow =
     {
@@ -34,43 +42,111 @@ void ChessGame::InitializeBoard()
         PieceType::Knight,
         PieceType::Rook
     };
-    
-    // Place the pieces on the board
+
+    // Place the major pieces and pawns for both players.
+    // The loop uses the same back-row arrangement for each color.
     for (int column = 0; column < BoardSize; column++)
     {
-        board[0][column] = Piece(backRow[column], PieceColor::White);
-        board[7][column] = Piece(backRow[column], PieceColor::Black);
+        board[0][column] =
+            Piece(backRow[column], PieceColor::White);
 
-        board[1][column] = Piece(PieceType::Pawn, PieceColor::White);
-        board[6][column] = Piece(PieceType::Pawn, PieceColor::Black);
+        board[7][column] =
+            Piece(backRow[column], PieceColor::Black);
+
+        board[1][column] =
+            Piece(PieceType::Pawn, PieceColor::White);
+
+        board[6][column] =
+            Piece(PieceType::Pawn, PieceColor::Black);
     }
 }
 
 void ChessGame::DisplayBoard() const
 {
+    /*
+     * Displays the board from the current player's perspective.
+     *
+     * The board data itself is not changed. Instead, this function
+     * changes the order in which rows and columns are printed.
+     * White sees White's side at the bottom, while Black sees
+     * Black's side at the bottom.
+     */
 
-    /*This function prints a chessboard display to the terminal.
-     * White pieces are displayed with capital letters.
-     * Black pieces are displayed with lowercase letters.
-    */
+    const bool viewingWhiteSide =
+        currentPlayer == PieceColor::White;
 
-    cout << "\n  a b c d e f g h\n";
+    // Print the column labels across the top of the board.
+    // The labels reverse when the board is viewed from Black's side.
+    cout << "\n  ";
 
-    for (int row = BoardSize - 1; row >= 0; row--)
+    for (int displayColumn = 0;
+         displayColumn < BoardSize;
+         displayColumn++)
     {
-        cout << row + 1 << " ";
+        int boardColumn;
 
-        for (int column = 0; column < BoardSize; column++)
+        if (viewingWhiteSide)
         {
-            if (!board[row][column].has_value())
+            boardColumn = displayColumn;
+        }
+        else
+        {
+            boardColumn = BoardSize - 1 - displayColumn;
+        }
+
+        cout << static_cast<char>('a' + boardColumn) << " ";
+    }
+
+    cout << "\n";
+
+    // Print each displayed row from top to bottom.
+    for (int displayRow = 0;
+         displayRow < BoardSize;
+         displayRow++)
+    {
+        int boardRow;
+
+        // Convert the displayed row into the corresponding board row.
+        if (viewingWhiteSide)
+        {
+            boardRow = BoardSize - 1 - displayRow;
+        }
+        else
+        {
+            boardRow = displayRow;
+        }
+
+        cout << boardRow + 1 << " ";
+
+        // Print each square in the current displayed row.
+        for (int displayColumn = 0;
+             displayColumn < BoardSize;
+             displayColumn++)
+        {
+            int boardColumn;
+
+            // Convert the displayed column into the corresponding
+            // column in the stored board.
+            if (viewingWhiteSide)
+            {
+                boardColumn = displayColumn;
+            }
+            else
+            {
+                boardColumn = BoardSize - 1 - displayColumn;
+            }
+
+            // Empty squares are displayed as periods.
+            if (!board[boardRow][boardColumn].has_value())
             {
                 cout << ". ";
             }
             else
             {
-                char symbol;
+                // Select a letter based on the piece's type.
+                char symbol = '?';
 
-                switch (board[row][column]->GetType())
+                switch (board[boardRow][boardColumn]->GetType())
                 {
                     case PieceType::King:
                         symbol = 'K';
@@ -79,7 +155,7 @@ void ChessGame::DisplayBoard() const
                     case PieceType::Queen:
                         symbol = 'Q';
                         break;
-                    
+
                     case PieceType::Rook:
                         symbol = 'R';
                         break;
@@ -97,50 +173,85 @@ void ChessGame::DisplayBoard() const
                         break;
                 }
 
-                if (board[row][column]->GetColor() == PieceColor::Black)
+                // Display Black pieces as lowercase letters so the two
+                // colors can be distinguished in the terminal.
+                if (board[boardRow][boardColumn]->GetColor()
+                    == PieceColor::Black)
                 {
-                    symbol = static_cast<char>(tolower(symbol));
+                    symbol = static_cast<char>(
+                        tolower(static_cast<unsigned char>(symbol))
+                    );
                 }
 
                 cout << symbol << " ";
             }
         }
-        cout << row + 1 << "\n";
+
+        cout << boardRow + 1 << "\n";
     }
 
-    cout << "  a b c d e f g h\n";
+    // Print the column labels again below the board.
+    cout << "  ";
+
+    for (int displayColumn = 0;
+         displayColumn < BoardSize;
+         displayColumn++)
+    {
+        int boardColumn;
+
+        if (viewingWhiteSide)
+        {
+            boardColumn = displayColumn;
+        }
+        else
+        {
+            boardColumn = BoardSize - 1 - displayColumn;
+        }
+
+        cout << static_cast<char>('a' + boardColumn) << " ";
+    }
+
+    cout << "\n";
 }
 
-bool ChessGame::IsLegalMove(int startRow, int startColumn, int endRow, int endColumn)
+bool ChessGame::IsLegalMove(int startRow, int startColumn,
+                            int endRow, int endColumn)
 {
-    // Checks that all the coordinates given are inside the board
-    if (startRow < 0 || startRow >= BoardSize || startColumn < 0 || startColumn >= BoardSize || endRow < 0 || endRow >= BoardSize || endColumn < 0 || endColumn >= BoardSize)
+    // First, make sure none of the coordinates are outside the board.
+    if (startRow < 0 || startRow >= BoardSize ||
+        startColumn < 0 || startColumn >= BoardSize ||
+        endRow < 0 || endRow >= BoardSize ||
+        endColumn < 0 || endColumn >= BoardSize)
     {
         return false;
     }
 
-    // Checks that the starting square contains a piece
+    // A move cannot begin from an empty square.
     if (!board[startRow][startColumn].has_value())
     {
         return false;
     }
 
-    const Piece& movingPiece = board[startRow][startColumn].value();
+    const Piece& movingPiece =
+        board[startRow][startColumn].value();
 
-    // Prevent current player from moving the opponent's piece
+    // The current player can only move pieces of their own color.
     if (movingPiece.GetColor() != currentPlayer)
     {
         return false;
     }
 
-    // Prevent piece from moving onto a square occupied by another piece of the same color.
-    if (board[endRow][endColumn].has_value() && board[endRow][endColumn]->GetColor() == currentPlayer)
+    // A piece cannot move onto a square occupied by a friendly piece.
+    if (board[endRow][endColumn].has_value() &&
+        board[endRow][endColumn]->GetColor() == currentPlayer)
     {
         return false;
     }
 
-    // Checks whether the movement pattern is valid.
-    if (!movingPiece.CanMove(startRow, startColumn, endRow, endColumn))
+    // Ask the Piece object whether the movement pattern is valid.
+    // Board-specific rules, such as blocked paths, can be added later.
+    if (!movingPiece.CanMove(startRow, startColumn,
+                             endRow, endColumn))
     {
         return false;
     }
@@ -150,23 +261,29 @@ bool ChessGame::IsLegalMove(int startRow, int startColumn, int endRow, int endCo
 
 bool ChessGame::MakeMove(int startRow, int startColumn, int endRow, int endColumn)
 {
-    // Check if the move the player wants to make is legal
+    // Validate the move before changing any board data.
     if (!IsLegalMove(startRow, startColumn, endRow, endColumn))
     {
         return false;
     }
 
-    // Copies the piece from the starting square to the destination square and then empties the original square.
+    // Copy the moving piece to the destination square.
+    // If an opponent's piece is there, this also performs a capture.
     board[endRow][endColumn] = board[startRow][startColumn];
+
+    // The original square is now empty.
     board[startRow][startColumn].reset();
 
-    // Stores each move description in the following format: (1, 4) -> (3,4) where the first pair of numbers is the starting row and column and the last are the ending row and column.
-    string moveDescription = "(" + to_string(startRow) + "," + to_string(startColumn) + ") -> (" + to_string(endRow) + "," + to_string(endColumn) + ")";
+    // Store a text description of the move for later display or file saving.
+    string moveDescription =
+        "(" + to_string(startRow) + ","
+        + to_string(startColumn) + ") -> ("
+        + to_string(endRow) + ","
+        + to_string(endColumn) + ")";
 
-    // Adds the move to the move-history vector.
     moveHistory.push_back(moveDescription);
 
-    // Switches the current player after a successful move
+    // Switch the turn after a successful move.
     if (currentPlayer == PieceColor::White)
     {
         currentPlayer = PieceColor::Black;
@@ -181,5 +298,6 @@ bool ChessGame::MakeMove(int startRow, int startColumn, int endRow, int endColum
 
 bool ChessGame::IsGameOver() const
 {
+    // Report whether another part of the game has marked the game as over.
     return gameOver;
 }
